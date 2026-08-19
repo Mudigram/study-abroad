@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/auth/login-form";
+import { ToastProvider } from "@/components/ui/toast";
 
 export default async function LoginPage({
   searchParams,
@@ -9,21 +10,12 @@ export default async function LoginPage({
   const error = typeof params.error === "string" ? params.error : null;
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
-      <div className="mb-8 text-center">
-        <h1 className="font-heading text-3xl font-black tracking-tight text-slate-900">The Japa Desk</h1>
-        <p className="mt-2 text-sm font-bold text-slate-500">
-          Your all-in-one workspace for study abroad applications, documents, deadlines, and FX capital.
-        </p>
+    <ToastProvider>
+      <div className="flex min-h-screen w-screen items-center justify-center bg-[#FAF8F5] p-4 sm:p-6 md:p-8">
+        <LoginForm initialError={error} />
       </div>
-
-      {error ? (
-        <p className="mb-4 max-w-md text-center text-sm text-destructive">
-          Sign-in failed. Request a new magic link and try again.
-        </p>
-      ) : null}
-
-      <LoginForm />
-    </div>
+    </ToastProvider>
   );
 }
+
+
