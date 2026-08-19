@@ -146,3 +146,39 @@ export async function updateProfile(
 
   return { success: true };
 }
+
+export async function updateBlockedAccountGoal(
+  target: number,
+  currency: string,
+): Promise<ProfileActionState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  if (isNaN(target) || target < 0) {
+    return { error: "Target amount must be a positive number or zero." };
+  }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      blocked_account_target: target,
+      blocked_account_currency: currency.trim().toUpperCase(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/ledger");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+

@@ -4,7 +4,7 @@ import { DeadlinesTimeline } from "@/components/deadlines/deadlines-timeline";
 import { CalendarDays, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Deadlines & Calendar | Application OS",
+  title: "Deadlines & Calendar | The Japa Desk",
   description: "Interactive calendar grid, chronological timeline, and program milestone matrix for tracking all study abroad deadlines.",
 };
 

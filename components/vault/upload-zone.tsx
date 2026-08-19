@@ -11,9 +11,6 @@ import { useToast } from "@/components/ui/toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const selectClass =
-  "h-10 w-full rounded-2xl border border-slate-200 bg-white px-3.5 text-xs font-extrabold text-slate-800 outline-none transition-all hover:border-indigo-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 shadow-2xs cursor-pointer";
-
 const DOCUMENT_TYPES: { value: DocumentType; label: string }[] = [
   { value: "passport", label: "Passport" },
   { value: "transcript", label: "Academic Transcript" },

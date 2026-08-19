@@ -11,9 +11,9 @@ export default async function LoginPage({
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-4 py-16">
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Application OS</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Track applications, documents, and capital in one place.
+        <h1 className="font-heading text-3xl font-black tracking-tight text-slate-900">The Japa Desk</h1>
+        <p className="mt-2 text-sm font-bold text-slate-500">
+          Your all-in-one workspace for study abroad applications, documents, deadlines, and FX capital.
         </p>
       </div>
 

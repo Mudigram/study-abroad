@@ -26,6 +26,8 @@ export interface CapitalSummary {
   liquidCapital: number;
   lockedCapital: number;
   totalSpent: number;
+  blockedAccountTarget: number;
+  blockedAccountCurrency: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -58,10 +60,10 @@ export async function getCapitalSummary(): Promise<CapitalSummary> {
 
   if (!user) redirect("/login");
 
-  // Profile for total_budget + base_currency
+  // Profile for total_budget + base_currency + blocked_account settings
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("total_budget, base_currency")
+    .select("total_budget, base_currency, blocked_account_target, blocked_account_currency")
     .eq("id", user.id)
     .single();
 
@@ -69,6 +71,8 @@ export async function getCapitalSummary(): Promise<CapitalSummary> {
 
   const totalBudget = (profile?.total_budget as number) ?? 0;
   const baseCurrency = (profile?.base_currency as string) ?? "USD";
+  const blockedAccountTarget = (profile?.blocked_account_target as number) ?? 0;
+  const blockedAccountCurrency = (profile?.blocked_account_currency as string) ?? "EUR";
 
   // All ledger entries
   const entries = await getLedgerEntries();
@@ -90,6 +94,8 @@ export async function getCapitalSummary(): Promise<CapitalSummary> {
     liquidCapital,
     lockedCapital,
     totalSpent,
+    blockedAccountTarget,
+    blockedAccountCurrency,
   };
 }
 

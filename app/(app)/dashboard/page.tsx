@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   BadgeDollarSign,
@@ -23,6 +22,10 @@ import { getCapitalSummary } from "@/app/actions/ledger";
 import { getProfile } from "@/app/actions/profile";
 import { getApplications } from "@/app/actions/applications";
 import { getUpcomingDeadlines } from "@/app/actions/deadlines";
+import { getTrackers } from "@/app/actions/trackers";
+import { ScholarshipMatcher } from "@/components/dashboard/scholarship-matcher";
+import { ProcessingTrackersList } from "@/components/dashboard/processing-trackers-list";
+
 import {
   Card,
   CardContent,
@@ -110,12 +113,14 @@ function ColorfulStatCard({
 // ─── Page Component ───────────────────────────────────────────────────────────
 
 export default async function DashboardPage() {
-  const [profile, capital, applications, deadlines] = await Promise.all([
+  const [profile, capital, applications, deadlines, trackers] = await Promise.all([
     getProfile(),
     getCapitalSummary(),
     getApplications(),
     getUpcomingDeadlines(),
+    getTrackers(),
   ]);
+
 
   const activeApplicationsCount = applications.filter(
     (a) => a.status !== "Rejected",
@@ -151,13 +156,13 @@ export default async function DashboardPage() {
           <div className="space-y-2 text-center sm:text-left">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/30 bg-white/10 px-3.5 py-1 text-xs font-bold text-amber-300 backdrop-blur-xs">
               <Sparkles className="h-3.5 w-3.5 fill-amber-300" />
-              <span>Interactive Workflow Guide</span>
+              <span>Interactive Relocation Playbook</span>
             </div>
             <h3 className="font-heading text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Discover How Application OS Works 🚀
+              Discover How The Japa Desk Works 🚀
             </h3>
             <p className="text-xs sm:text-sm text-indigo-200 font-medium max-w-lg leading-relaxed">
-              Explore our 6-step roadmap for managing study-abroad applications, document vaults, live FX budgets, and deadlines.
+              Explore our 6-step playbook for managing university applications, document vaults, live FX budgets, and deadlines.
             </p>
           </div>
 
@@ -166,7 +171,7 @@ export default async function DashboardPage() {
             className="inline-flex items-center gap-2 shrink-0 rounded-full bg-amber-400 px-6 py-3 text-xs font-black text-slate-950 shadow-lg shadow-amber-400/30 transition-all hover:bg-amber-300 hover:scale-105 active:scale-95 cursor-pointer"
           >
             <Compass className="h-4 w-4" />
-            <span>Explore How It Works →</span>
+            <span>Explore Playbook →</span>
           </Link>
         </div>
 
@@ -175,13 +180,13 @@ export default async function DashboardPage() {
         <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-purple-500/30 blur-2xl pointer-events-none" />
       </div>
 
-      {/* ─── 2. Whimsical Welcome Banner ────────────────────────────────────────── */}
+      {/* ─── 2. Whimsical Welcome & Japa Snapshot Banner (NO IMAGE) ─────────────── */}
       <div className="relative overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-r from-purple-100 via-indigo-50 to-amber-50 p-8 sm:p-10 shadow-sm">
-        <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex-1 space-y-3 text-center md:text-left">
             <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white/80 px-3.5 py-1 text-xs font-bold text-indigo-700 shadow-xs backdrop-blur-xs">
               <Sparkles className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-              <span>Application OS Dashboard</span>
+              <span>The Japa Desk Workspace</span>
             </div>
 
             <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -189,7 +194,7 @@ export default async function DashboardPage() {
             </h1>
 
             <p className="text-sm sm:text-base text-slate-600 font-medium max-w-xl leading-relaxed">
-              Ready to conquer your university & scholarship goals? Let’s check your active pipeline, upcoming deadlines, and funding status!
+              Welcome to your Japa Desk! Ready to conquer your study abroad goals? Let’s check your active pipeline, upcoming deadlines, and funding status.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3 justify-center md:justify-start">
@@ -210,15 +215,46 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Banner Illustration */}
-          <div className="relative h-44 w-full md:h-56 md:w-80 shrink-0 rounded-2xl overflow-hidden shadow-md border-2 border-white/80">
-            <Image
-              src="/images/welcome-banner.jpg"
-              alt="Happy student working on laptop"
-              fill
-              className="object-cover"
-              priority
-            />
+          {/* Japa Snapshot Card (Replacing Image) */}
+          <div className="w-full md:w-80 shrink-0 rounded-3xl border-2 border-slate-900/10 bg-white p-5 shadow-sm space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Globe2 className="h-3.5 w-3.5 text-indigo-600" /> Japa Profile Snapshot
+              </span>
+              <Link href="/profile" className="text-[10px] font-black text-indigo-600 hover:underline">
+                Edit Profile →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+              <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-100">
+                <span className="text-[9px] font-black text-slate-400 uppercase block">Home Country</span>
+                <span className="text-slate-900 font-extrabold truncate block mt-0.5">
+                  {profile?.home_country || "Nigeria"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-100">
+                <span className="text-[9px] font-black text-slate-400 uppercase block">Highest Degree</span>
+                <span className="text-slate-900 font-extrabold truncate block mt-0.5">
+                  {profile?.highest_degree || "Bachelor's"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-100">
+                <span className="text-[9px] font-black text-slate-400 uppercase block">Target Budget</span>
+                <span className="text-slate-900 font-extrabold truncate block mt-0.5">
+                  {profile?.total_budget ? fmtUsd(profile.total_budget) : "$15,000"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl bg-slate-50 p-2.5 border border-slate-100">
+                <span className="text-[9px] font-black text-slate-400 uppercase block">Base Currency</span>
+                <span className="text-slate-900 font-extrabold truncate block mt-0.5">
+                  {profile?.base_currency || "USD"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -322,146 +358,154 @@ export default async function DashboardPage() {
         </Card>
       )}
 
-      {/* ─── 5. Profile & Quick Details Grid ─────────────────────────────────── */}
+      {/* ─── 5. 1-Click Scholarship Matcher ─────────────────────────────────── */}
+      <ScholarshipMatcher profile={profile} />
+
+      {/* ─── 6. Profile, Queue, & Quick Access Grid ─────────────────────────── */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Profile Card */}
-        <Card className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-playful">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-                <User className="h-5 w-5" />
+        <div className="space-y-6">
+          {/* Profile Card */}
+          <Card className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-playful">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+                  <User className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading text-base font-extrabold text-slate-900">
+                    Applicant Profile
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">Global settings & target budget</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-heading text-base font-extrabold text-slate-900">
-                  Applicant Profile
-                </h3>
-                <p className="text-xs text-slate-500 font-medium">Global settings & target budget</p>
-              </div>
-            </div>
 
-            <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-800 border border-emerald-200">
-              Verified
-            </span>
-          </div>
-
-          <div className="mt-5 grid grid-cols-2 gap-4 text-xs">
-            <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
-              <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
-                Home Country
-              </span>
-              <span className="font-heading text-sm font-extrabold text-slate-900 mt-1 block">
-                {profile?.home_country ?? "Not set"}
+              <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-800 border border-emerald-200">
+                Verified
               </span>
             </div>
 
-            <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
-              <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
-                Highest Degree
-              </span>
-              <span className="font-heading text-sm font-extrabold text-slate-900 mt-1 block truncate">
-                {profile?.highest_degree ?? "Not set"}
-              </span>
-            </div>
-
-            <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
-              <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
-                Work Experience
-              </span>
-              <span className="font-heading text-sm font-extrabold text-slate-900 mt-1 block">
-                {profile?.yoe ?? 0} {profile?.yoe === 1 ? "Year" : "Years"}
-              </span>
-            </div>
-
-            <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
-              <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
-                Total Budget
-              </span>
-              <span className="font-heading text-sm font-extrabold text-indigo-600 mt-1 block">
-                {profile?.base_currency}{" "}
-                {profile?.total_budget?.toLocaleString() ?? "0"}
-              </span>
-            </div>
-          </div>
-        </Card>
-
-        {/* Quick Tools Access Card */}
-        <Card className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-playful">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
-                <Compass className="h-5 w-5" />
+            <div className="mt-5 grid grid-cols-2 gap-4 text-xs">
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+                  Home Country
+                </span>
+                <span className="font-heading text-sm font-extrabold text-slate-900 mt-1 block">
+                  {profile?.home_country ?? "Not set"}
+                </span>
               </div>
-              <div>
-                <h3 className="font-heading text-base font-extrabold text-slate-900">
-                  Quick Actions
-                </h3>
-                <p className="text-xs text-slate-500 font-medium">Shortcuts to key features</p>
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+                  Highest Degree
+                </span>
+                <span className="font-heading text-sm font-extrabold text-slate-900 mt-1 block truncate">
+                  {profile?.highest_degree ?? "Not set"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+                  Work Experience
+                </span>
+                <span className="font-heading text-sm font-extrabold text-slate-900 mt-1 block">
+                  {profile?.yoe ?? 0} {profile?.yoe === 1 ? "Year" : "Years"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5">
+                <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+                  Total Budget
+                </span>
+                <span className="font-heading text-sm font-extrabold text-indigo-600 mt-1 block">
+                  {profile?.base_currency}{" "}
+                  {profile?.total_budget?.toLocaleString() ?? "0"}
+                </span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <Link
-              href="/pipeline"
-              className="flex flex-col gap-2 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 transition-all hover:bg-indigo-100/60 hover:scale-[1.02]"
-            >
-              <GanttChart className="h-5 w-5 text-indigo-600" />
-              <div>
-                <span className="font-heading text-xs font-extrabold text-slate-900 block">
-                  Kanban Pipeline
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium block">
-                  Track program statuses
-                </span>
+          {/* Quick Tools Access Card */}
+          <Card className="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-playful">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+                  <Compass className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading text-base font-extrabold text-slate-900">
+                    Quick Actions
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">Shortcuts to key features</p>
+                </div>
               </div>
-            </Link>
+            </div>
 
-            <Link
-              href="/requirements"
-              className="flex flex-col gap-2 rounded-2xl border border-rose-100 bg-rose-50/50 p-4 transition-all hover:bg-rose-100/60 hover:scale-[1.02]"
-            >
-              <FileCheck2 className="h-5 w-5 text-rose-600" />
-              <div>
-                <span className="font-heading text-xs font-extrabold text-slate-900 block">
-                  Checklists
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium block">
-                  Task completion lists
-                </span>
-              </div>
-            </Link>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <Link
+                href="/pipeline"
+                className="flex flex-col gap-2 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 transition-all hover:bg-indigo-100/60 hover:scale-[1.02]"
+              >
+                <GanttChart className="h-5 w-5 text-indigo-600" />
+                <div>
+                  <span className="font-heading text-xs font-extrabold text-slate-900 block">
+                    Kanban Pipeline
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium block">
+                    Track program statuses
+                  </span>
+                </div>
+              </Link>
 
-            <Link
-              href="/vault"
-              className="flex flex-col gap-2 rounded-2xl border border-teal-100 bg-teal-50/50 p-4 transition-all hover:bg-teal-100/60 hover:scale-[1.02]"
-            >
-              <FolderOpen className="h-5 w-5 text-teal-600" />
-              <div>
-                <span className="font-heading text-xs font-extrabold text-slate-900 block">
-                  Document Vault
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium block">
-                  Upload SOPs & transcripts
-                </span>
-              </div>
-            </Link>
+              <Link
+                href="/requirements"
+                className="flex flex-col gap-2 rounded-2xl border border-rose-100 bg-rose-50/50 p-4 transition-all hover:bg-rose-100/60 hover:scale-[1.02]"
+              >
+                <FileCheck2 className="h-5 w-5 text-rose-600" />
+                <div>
+                  <span className="font-heading text-xs font-extrabold text-slate-900 block">
+                    Checklists
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium block">
+                    Task completion lists
+                  </span>
+                </div>
+              </Link>
 
-            <Link
-              href="/ledger"
-              className="flex flex-col gap-2 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 transition-all hover:bg-amber-100/60 hover:scale-[1.02]"
-            >
-              <TrendingUp className="h-5 w-5 text-amber-600" />
-              <div>
-                <span className="font-heading text-xs font-extrabold text-slate-900 block">
-                  FX Ledger
-                </span>
-                <span className="text-[11px] text-slate-500 font-medium block">
-                  Expenses & exchange rate
-                </span>
-              </div>
-            </Link>
-          </div>
-        </Card>
+              <Link
+                href="/vault"
+                className="flex flex-col gap-2 rounded-2xl border border-teal-100 bg-teal-50/50 p-4 transition-all hover:bg-teal-100/60 hover:scale-[1.02]"
+              >
+                <FolderOpen className="h-5 w-5 text-teal-600" />
+                <div>
+                  <span className="font-heading text-xs font-extrabold text-slate-900 block">
+                    Document Vault
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium block">
+                    Upload SOPs & transcripts
+                  </span>
+                </div>
+              </Link>
+
+              <Link
+                href="/ledger"
+                className="flex flex-col gap-2 rounded-2xl border border-amber-100 bg-amber-50/50 p-4 transition-all hover:bg-amber-100/60 hover:scale-[1.02]"
+              >
+                <TrendingUp className="h-5 w-5 text-amber-600" />
+                <div>
+                  <span className="font-heading text-xs font-extrabold text-slate-900 block">
+                    FX Ledger
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium block">
+                    Expenses & exchange rate
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </Card>
+        </div>
+
+        {/* Visa & Evaluation Tracker List */}
+        <ProcessingTrackersList trackers={trackers} applications={applications} />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import { FullProfileForm } from "@/components/profile/full-profile-form";
 import { User, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Profile & Preferences | Application OS",
+  title: "Profile & Preferences | The Japa Desk",
   description: "Configure your academic profile, budget allocation, base currency, and study abroad preferences.",
 };
 

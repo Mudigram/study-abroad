@@ -404,3 +404,96 @@ Guidelines:
     return { error: `AI Research Assist failed: ${(err as Error).message}` };
   }
 }
+
+export async function createApplicationFromScholarship(
+  universityName: string,
+  programName: string,
+  country: string,
+  scholarshipName: string,
+  templateSearchName: string,
+): Promise<{ error?: string; success?: boolean; applicationId?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // 1. Insert application
+  // Set default deadline to 6 months from now
+  const defaultDeadline = new Date();
+  defaultDeadline.setMonth(defaultDeadline.getMonth() + 6);
+  const deadlineStr = defaultDeadline.toISOString().split("T")[0];
+
+  const { data: newApp, error: appError } = await supabase
+    .from("applications")
+    .insert({
+      user_id: user.id,
+      university_name: universityName,
+      program_name: programName,
+      country,
+      scholarship_name: scholarshipName,
+      status: "Pathway Idea" as ApplicationStatus,
+      deadline: deadlineStr,
+      priority: 2,
+      visa_required: true,
+      deposit_required: 0,
+      notes: `Matched and instantiated via 1-click Scholarship matcher on ${new Date().toLocaleDateString()}.`,
+    })
+    .select("id")
+    .single();
+
+  if (appError || !newApp) {
+    return { error: appError?.message || "Failed to create application." };
+  }
+
+  const newAppId = newApp.id;
+
+  // 2. Look for template by name or country
+  const { data: templates, error: tempError } = await supabase
+    .from("requirement_templates")
+    .select("id, name")
+    .or(`name.ilike.%${templateSearchName}%,country.ilike.%${country}%`);
+
+  if (!tempError && templates && templates.length > 0) {
+    // Found template! Apply it
+    const templateId = templates[0].id;
+    const { data: template, error: templateError } = await supabase
+      .from("requirement_templates")
+      .select("items")
+      .eq("id", templateId)
+      .single();
+
+    if (!templateError && template) {
+      const items = template.items as any[];
+      const inserts = items.map((item) => {
+        let dueDate: string | null = null;
+        if (item.default_due_offset_days !== null) {
+          const deadlineDate = new Date(deadlineStr);
+          deadlineDate.setDate(deadlineDate.getDate() + item.default_due_offset_days);
+          dueDate = deadlineDate.toISOString().split("T")[0];
+        }
+        return {
+          user_id: user.id,
+          application_id: newAppId,
+          label: item.label,
+          category: item.category,
+          status: "Not Started",
+          due_date: dueDate,
+        };
+      });
+
+      if (inserts.length > 0) {
+        await supabase.from("application_requirements").insert(inserts);
+      }
+    }
+  }
+
+  revalidatePath("/dashboard");
+  revalidatePath("/pipeline");
+  revalidatePath("/requirements");
+  return { success: true, applicationId: newAppId };
+}
+

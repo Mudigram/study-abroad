@@ -86,7 +86,7 @@ export function AppSidebar({ userName }: AppSidebarProps) {
         type="button"
         onClick={toggleCollapse}
         title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-        className="absolute -right-1.5 top-22 z-50 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-indigo-600 text-white shadow-md transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+        className="absolute -right-1.5 top-20 z-50 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-indigo-600 text-white shadow-md transition-transform hover:scale-110 active:scale-95 cursor-pointer"
       >
         {isCollapsed ? (
           <ChevronRight className="h-4 w-4" />
@@ -109,10 +109,10 @@ export function AppSidebar({ userName }: AppSidebarProps) {
         {!isCollapsed && (
           <div className="flex flex-col min-w-0">
             <span className="font-heading text-base font-black tracking-tight text-slate-900 flex items-center gap-1.5 truncate">
-              Study Abroad <Sparkles className="h-3.5 w-3.5 text-amber-500 fill-amber-400" />
+              The Japa Desk <Sparkles className="h-3.5 w-3.5 text-amber-500 fill-amber-400" />
             </span>
             <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">
-              Application OS
+              Study &amp; Relocation OS
             </span>
           </div>
         )}

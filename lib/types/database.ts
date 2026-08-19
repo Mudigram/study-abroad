@@ -9,6 +9,8 @@ export interface Profile {
   yoe: number;
   home_country: string | null;
   role: ProfileRole;
+  blocked_account_target?: number;
+  blocked_account_currency?: string;
   created_at: string;
   updated_at: string;
 }

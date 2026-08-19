@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
 
       htmlBody += `
           <p style="color: #94a3b8; font-size: 11px; margin-top: 30px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-            This is an automated digest sent by your Application OS workspace.
+            This is an automated digest sent by your The Japa Desk workspace.
           </p>
         </div>
       `;
@@ -161,9 +161,9 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "Application OS <onboarding@resend.dev>",
+          from: "The Japa Desk <onboarding@resend.dev>",
           to: [email],
-          subject: "Application OS: Upcoming Deadlines Digest",
+          subject: "The Japa Desk: Upcoming Deadlines Digest",
           html: htmlBody,
         }),
       });

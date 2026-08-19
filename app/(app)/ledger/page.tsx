@@ -3,11 +3,12 @@ import { getCapitalSummary, getLedgerEntries } from "@/app/actions/ledger";
 import { AddExpenseDialog } from "@/components/ledger/add-expense-dialog";
 import { CapitalWidget } from "@/components/ledger/capital-widget";
 import { ExpensePieChart } from "@/components/ledger/expense-pie-chart";
+import { BlockedAccountPlanner } from "@/components/ledger/blocked-account-planner";
 import { LedgerTable } from "@/components/ledger/ledger-table";
 import { Wallet, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "FX Capital Ledger | Application OS",
+  title: "FX Capital Ledger | The Japa Desk",
   description: "Track liquid capital, multi-currency expenses, live FX exchange rates, and category pie chart breakdowns.",
 };
 
@@ -38,6 +39,9 @@ export default async function LedgerPage() {
 
       {/* Capital Position Overview Widget */}
       <CapitalWidget summary={summary} />
+
+      {/* Blocked Account Target Progress Planner */}
+      <BlockedAccountPlanner summary={summary} />
 
       {/* Visual Pie Chart Expense Breakdown */}
       <ExpensePieChart entries={entries} baseCurrency={summary.baseCurrency} />

@@ -25,9 +25,9 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Application OS",
+  title: "The Japa Desk",
   description:
-    "Track international university and scholarship applications, documents, deadlines, and capital — all in one place.",
+    "The all-in-one platform for tracking study abroad applications, documents, deadlines, scholarships, and FX capital.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

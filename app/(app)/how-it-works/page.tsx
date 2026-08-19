@@ -134,7 +134,7 @@ export default function HowItWorksPage() {
         </h1>
 
         <p className="text-sm sm:text-base text-slate-600 font-semibold leading-relaxed">
-          No lost documents, no budget surprises, no missed deadlines. Application OS organises your entire journey into 6 playful, stress-free stages!
+          No lost documents, no budget surprises, no missed deadlines. The Japa Desk organises your entire journey into 6 playful, stress-free stages!
         </p>
       </div>
 
