@@ -1,16 +1,14 @@
 "use client";
 
-import { useActionState, useState, useTransition } from "react";
+import { useActionState } from "react";
 import {
-  signInWithMagicLink,
-  signInWithGoogle,
+  signInWithPassword,
   type AuthActionState,
 } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, Sparkles, Loader2 } from "lucide-react";
-import { useToast } from "@/components/ui/toast";
 
 const initialState: AuthActionState = {};
 
@@ -19,32 +17,16 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ initialError }: LoginFormProps) {
-  const { toast } = useToast();
-  const [googlePending, startGoogleTransition] = useTransition();
-
   const [state, formAction, pending] = useActionState(
-    signInWithMagicLink,
+    signInWithPassword,
     initialState,
   );
-
-  const handleGoogleSignIn = () => {
-    startGoogleTransition(async () => {
-      const res = await signInWithGoogle();
-      if (res?.error) {
-        toast({
-          title: "Google authentication failed",
-          description: res.error,
-          type: "error",
-        });
-      }
-    });
-  };
 
   return (
     <div className="flex w-full max-w-4xl min-h-[550px] rounded-[2.5rem] border-2 border-slate-900/10 bg-white overflow-hidden shadow-2xl shadow-playful">
       {/* ─── Left Pane: Colorful Premium Gradient ──────────────────────────────── */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-tr from-indigo-700 via-purple-700 to-amber-500 p-12 text-white flex-col justify-between relative overflow-hidden">
-        {/* Background Decorative Blur Spheres (similar to image 2) */}
+        {/* Background Decorative Blur Spheres */}
         <div className="absolute -top-20 -left-20 h-64 w-64 rounded-full bg-indigo-500/30 blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 -right-20 h-80 w-80 rounded-full bg-purple-500/30 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-20 left-10 h-72 w-72 rounded-full bg-amber-400/20 blur-3xl pointer-events-none" />
@@ -100,7 +82,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
               Sign In
             </h1>
             <p className="text-xs sm:text-sm font-semibold text-slate-500 leading-normal">
-              Enter your email to receive a passwordless magic link, or continue using your Google account.
+              Enter your account credentials provided by your coordinator to access your relocation workspace.
             </p>
           </div>
 
@@ -119,67 +101,40 @@ export function LoginForm({ initialError }: LoginFormProps) {
               />
             </div>
 
+            <div className="grid gap-1.5">
+              <Label htmlFor="password">Your Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••••••"
+                required
+                className="h-11 px-4"
+              />
+            </div>
+
             {/* Error alerts */}
             {(state.error || initialError) && (
               <div className="rounded-2xl border border-rose-200 bg-rose-50 p-3.5 text-xs font-bold text-rose-600">
-                {state.error || (initialError === "auth" ? "Sign-in failed. Please check your credentials or request a new magic link." : "An error occurred during authentication.")}
-              </div>
-            )}
-
-            {/* Success state */}
-            {state.success && (
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs font-bold text-emerald-800">
-                🎉 Success! Please check your email inbox for a secure login link.
+                {state.error || (initialError === "auth" ? "Sign-in failed. Please check your credentials and try again." : "An error occurred during authentication.")}
               </div>
             )}
 
             <Button
               type="submit"
-              disabled={pending || googlePending}
+              disabled={pending}
               className="w-full h-11 rounded-2xl font-extrabold text-sm shadow-md shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
             >
               {pending ? (
                 <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" /> Sending Link...
+                  <Loader2 className="h-4 w-4 animate-spin" /> Signing In...
                 </span>
               ) : (
-                "Send Magic Link"
+                "Sign In"
               )}
             </Button>
           </form>
-
-          {/* Divider */}
-          <div className="relative flex items-center justify-center my-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-100" />
-            </div>
-            <span className="relative bg-white px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
-              or continue with
-            </span>
-          </div>
-
-          {/* Google Sign-in */}
-          <Button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={pending || googlePending}
-            variant="outline"
-            className="w-full h-11 rounded-2xl border-2 border-slate-900/10 font-extrabold text-sm hover:bg-slate-50 cursor-pointer flex items-center justify-center gap-2 text-slate-700"
-          >
-            {googlePending ? (
-              <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
-            ) : (
-              <svg className="h-4.5 w-4.5 shrink-0" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-                <g transform="matrix(1, 0, 0, 1, 0, 0)">
-                  <path d="M21.35,11.1H12v2.7h5.38c-0.24,1.28 -0.96,2.37 -2.04,3.1v2.57h3.3c1.93,-1.78 3.04,-4.4 3.04,-7.47c0,-0.61 -0.05,-1.2 -0.15,-1.72Z" fill="#4285F4"/>
-                  <path d="M12,20.5c2.3,0 4.23,-0.76 5.64,-2.07l-3.3,-2.57c-0.9,0.6 -2.07,0.97 -3.34,0.97c-2.57,0 -4.75,-1.73 -5.53,-4.07H2.07v2.66c1.44,2.87 4.41,4.08 7.93,4.08Z" fill="#34A853"/>
-                  <path d="M6.47,12.76c-0.2,-0.6 -0.31,-1.24 -0.31,-1.9s0.11,-1.3 0.31,-1.9V6.3H2.07C1.41,7.62 1,9.12 1,10.86c0,1.74 0.41,3.24 1.07,4.56l3.4,-2.66Z" fill="#FBBC05"/>
-                  <path d="M12,4.64c1.25,0 2.37,0.43 3.25,1.27l2.43,-2.43C16.23,2.1 14.3,1.22 12,1.22c-3.52,0 -6.49,1.21 -7.93,4.08l3.4,2.66c0.78,-2.34 2.96,-4.07 5.53,-4.07Z" fill="#EA4335"/>
-                </g>
-              </svg>
-            )}
-            <span>Sign In with Google</span>
-          </Button>
         </div>
       </div>
     </div>

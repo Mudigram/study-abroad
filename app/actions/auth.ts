@@ -23,32 +23,33 @@ function getSiteOrigin(originHeader: string | null): string {
   return "http://localhost:3000";
 }
 
-export async function signInWithMagicLink(
+export async function signInWithPassword(
   _prevState: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
   const email = formData.get("email");
+  const password = formData.get("password");
 
   if (typeof email !== "string" || !email.includes("@")) {
     return { error: "Enter a valid email address." };
   }
 
-  const headersList = await headers();
-  const origin = getSiteOrigin(headersList.get("origin"));
+  if (typeof password !== "string" || !password.trim()) {
+    return { error: "Password is required." };
+  }
+
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithOtp({
+  const { error } = await supabase.auth.signInWithPassword({
     email: email.trim(),
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
+    password: password,
   });
 
   if (error) {
     return { error: error.message };
   }
 
-  return { success: true };
+  redirect("/dashboard");
 }
 
 export async function signOut(): Promise<void> {
@@ -57,26 +58,4 @@ export async function signOut(): Promise<void> {
   redirect("/login");
 }
 
-export async function signInWithGoogle(): Promise<{ error?: string }> {
-  const headersList = await headers();
-  const origin = getSiteOrigin(headersList.get("origin"));
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${origin}/auth/callback`,
-    },
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  if (data.url) {
-    redirect(data.url);
-  }
-
-  return {};
-}
 
